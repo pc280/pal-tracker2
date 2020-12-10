@@ -66,9 +66,9 @@ public class TimeEntryControllerTest {
     @Test
     public void testRead_NotFound() {
         long nonExistentTimeEntryId = 1L;
-        doReturn(null)
-            .when(timeEntryRepository)
-            .find(nonExistentTimeEntryId);
+        TimeEntry timeEntry = doReturn(null)
+                .when(timeEntryRepository)
+                .find(nonExistentTimeEntryId);
 
         ResponseEntity<TimeEntry> response = controller.read(nonExistentTimeEntryId);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -80,7 +80,7 @@ public class TimeEntryControllerTest {
             new TimeEntry(1L, 123L, 456L, LocalDate.parse("2017-01-08"), 8),
             new TimeEntry(2L, 789L, 321L, LocalDate.parse("2017-01-07"), 4)
         );
-        doReturn(expected).when(timeEntryRepository).list();
+        List<TimeEntry> list = doReturn(expected).when(timeEntryRepository).list();
 
         ResponseEntity<List<TimeEntry>> response = controller.list();
 
@@ -97,9 +97,9 @@ public class TimeEntryControllerTest {
         TimeEntry timeEntryToUpdate = new TimeEntry(0, projectId, userId, LocalDate.parse("2017-01-07"), 4);
 
         TimeEntry expected = new TimeEntry(timeEntryId, projectId, userId, LocalDate.parse("2017-01-07"), 4);
-        doReturn(expected)
-            .when(timeEntryRepository)
-            .update(eq(timeEntryId), any(TimeEntry.class));
+        TimeEntry update = doReturn(expected)
+                .when(timeEntryRepository)
+                .update(eq(timeEntryId), any(TimeEntry.class));
 
         ResponseEntity<TimeEntry> response = controller.update(timeEntryId, timeEntryToUpdate);
 
@@ -111,9 +111,9 @@ public class TimeEntryControllerTest {
     @Test
     public void testUpdate_NotFound() {
         long nonExistentTimeEntryId = 1L;
-        doReturn(null)
-            .when(timeEntryRepository)
-            .update(eq(nonExistentTimeEntryId), any(TimeEntry.class));
+        TimeEntry update = doReturn(null)
+                .when(timeEntryRepository)
+                .update(eq(nonExistentTimeEntryId), any(TimeEntry.class));
 
         ResponseEntity<TimeEntry> response = controller.update(nonExistentTimeEntryId, new TimeEntry(0,0,0,LocalDate.EPOCH,0));
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
